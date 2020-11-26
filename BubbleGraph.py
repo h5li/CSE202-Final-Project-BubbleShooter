@@ -3,6 +3,8 @@ import numpy as np
 class BubbleGraph:
     def __init__(self, matrix):
         self.matrix = matrix
+        self.n_rows = len(matrix)
+        self.n_cols = len(matrix[0])
 
     @staticmethod
     def random_graph(n_rows: int, n_cols: int, n_colors: int):
