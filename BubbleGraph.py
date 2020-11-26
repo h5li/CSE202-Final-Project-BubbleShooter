@@ -67,3 +67,6 @@ class BubbleGraph:
                 adj.append([x, y])
         
         return adj
+
+    def copy(self):
+        return BubbleGraph(np.array(self.matrix))
