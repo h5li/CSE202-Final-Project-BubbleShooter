@@ -97,28 +97,35 @@ def bubblesPopped(M,Loc,Color):
     visited =  [[False]*len(M[0]) for i in range(len(M))] # visited is a dictionary instead of an array
     bubs_to_pop = []
     node_count = 0 # keeps track of total nodes
-    
+    incrementor = 0
+
     while len(stack) > 0:
+
         s = stack[-1]
         stack.pop()
-        # Adjacent Returns list of adjacent nodes that are same color
-        adjacent  = findAdjacentColors(M,s,Color)
-        # print(adjacent)
-        if visited[s[0]][s[1]] == False:
-            visited[s[0]][s[1]] = True
+
+        if incrementor == 0:
+            adj_nodes  = findAdjacentColors(M,s,Color)
+            
+
+        if visited[s[0]][s[1]] == 0:
+            visited[s[0]][s[1]] = 1
             bubs_to_pop.append(s)
             node_count +=1
+            adj_nodes  = findAdjacentColors(M,s,Color)
+        
+            for node in adj_nodes:
+                if visited[node[0]][node[1]] == 0:
+                    stack.append(node)
 
-        for node in adjacent:
-            # print(node)
-            if visited[node[0]][node[1]] == False:
-                stack.append(node)
+        incrementor += 1
 
     # calculate score
     score = calculateScore(node_count)
     
     # update matrix
     M_new = update_matrix(M,bubs_to_pop,Loc,Color)
+    
     
     return M_new, score
 
@@ -221,3 +228,5 @@ def test_bubbles_popped(mode = 'debug'):
         print('Score: ',score)
 
     return
+
+
