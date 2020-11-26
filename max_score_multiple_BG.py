@@ -53,6 +53,7 @@ def max_score_many_memo(bg: BubbleGraph, l):
         
         reachables = reachable(bg)
         if len(reachables) == 0:
+            memo[serialized] = (bg, 0)
             return bg, 0
 
         for pos in reachables:
@@ -62,7 +63,7 @@ def max_score_many_memo(bg: BubbleGraph, l):
                 max_score = score_rec + score
                 final_bg = bg_rec
 
-        memo[serialized] = (max_score, final_bg)
+        memo[serialized] = (final_bg, max_score)
         return final_bg, max_score
 
     return helper(bg, l)
@@ -72,7 +73,7 @@ if __name__ == '__main__':
     bg.print()
     print('-----')
 
-    final_bg, score = max_score_many(bg, [1, 1, 3, 4])
+    final_bg, score = max_score_many_memo(bg, [1, 1, 3, 4])
 
     final_bg.print()
     print(f'Score: {score}')
