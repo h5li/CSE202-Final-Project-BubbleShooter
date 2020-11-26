@@ -164,7 +164,7 @@ def test_bubbles_popped(mode = 'debug'):
         print('input\n')
         print(print_matrix(test_mat))
         print('output\n')
-        print(print_matrix(M_new))
+        print(print_matrix(M_new.matrix))
         print('visited\n')
         print(print_matrix(visited))
         print('Score: ',score)
@@ -174,7 +174,7 @@ def test_bubbles_popped(mode = 'debug'):
         print('input\n')
         print(print_matrix(test_mat))
         print('output\n')
-        print(print_matrix(M_new))
+        print(print_matrix(M_new.matrix))
         print('Score: ',score)
 
     return
