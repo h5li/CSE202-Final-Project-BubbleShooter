@@ -27,9 +27,12 @@ class BubbleGraph:
         '''
         Prints the matrix in a user-friendly manner.
         '''
-        for row in self.matrix:
+        for i in range(len(self.matrix)):
             row_str = ''
-            for color in row:
+            if i % 2 == 1: # Add skew
+                row_str += ' '
+
+            for color in self.matrix[i]:
                 row_str += str(color) + ' '
 
             print(row_str)
@@ -39,3 +42,26 @@ class BubbleGraph:
         use bg[i] to get the i'th row of the matrix, instead of bg.matrix[i].
         '''
         return self.matrix[key]
+
+    def adjacent(self, pos):
+        '''
+        Outputs a list of positions that are adjacent to the given position. All the positions will be filled (non-zero).
+        '''
+        directions = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+        diagonals_odd = [[1, 1], [-1, 1]]
+        diagonals_even = [[1, -1], [-1, -1]]
+
+        if pos[0] % 2 == 1:
+            directions += diagonals_odd
+        else:
+            directions += diagonals_even
+
+        adj = []
+
+        for d in directions:
+            x = pos[0] + d[0]
+            y = pos[1] + d[1]
+            if x >= 0 and x < len(self.matrix) and y >= 0 and y < len(self.matrix[x]) and self.matrix[x][y] != 0:
+                adj.append([x, y])
+        
+        return adj
