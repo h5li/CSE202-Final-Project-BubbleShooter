@@ -69,4 +69,7 @@ class BubbleGraph:
         return adj
 
     def copy(self):
+        '''
+        Returns a deep copy of the original bubble graph.
+        '''
         return BubbleGraph(np.array(self.matrix))
