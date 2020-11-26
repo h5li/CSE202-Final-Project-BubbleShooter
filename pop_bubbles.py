@@ -1,5 +1,9 @@
 import random
 import copy
+import sys
+sys.path.append('G:\My Drive\CLASSES\FA20\CSE 202\Project\CSE202-Final-Project-BubbleShooter')
+import reachable
+
 
 def calculateScore(numBalls):
     if numBalls < 3:
@@ -32,25 +36,37 @@ def findAdjacentColors(M,Loc,Color):
         potential_adjacent.append((y-1, x-1))
     
     if x == 0:
-        to_delete = []
-        for pair in potential_adjacent:
+        oob_indices = []
+        for i,pair in enumerate(potential_adjacent):
             if pair[1] == -1:
-                potential_adjacent.remove(pair)
-        
+                oob_indices.extend([i])
+        potential_adjacent = [ind for i, ind in enumerate(potential_adjacent) \
+                              if i not in oob_indices]           
+    
+               
     if x == n-1:
-        for pair in potential_adjacent:
+        oob_indices = []
+        for i,pair in enumerate(potential_adjacent):
             if pair[1] == n:
-                potential_adjacent.remove(pair)
+                oob_indices.extend([i])
+        potential_adjacent = [ind for i, ind in enumerate(potential_adjacent) \
+                              if i not in oob_indices] 
 
     if y == 0:
-        for pair in potential_adjacent:
+        oob_indices = []
+        for i,pair in enumerate(potential_adjacent):
             if pair[0] == -1:
-                potential_adjacent.remove(pair)
+                oob_indices.extend([i])
+        potential_adjacent = [ind for i, ind in enumerate(potential_adjacent) \
+                              if i not in oob_indices] 
                
     if y == m-1:
-        for pair in potential_adjacent:
+        oob_indices = []
+        for i,pair in enumerate(potential_adjacent):
             if pair[0] == m:
-                potential_adjacent.remove(pair)
+                oob_indices.extend([i])
+        potential_adjacent = [ind for i, ind in enumerate(potential_adjacent) \
+                              if i not in oob_indices] 
                
     for i in range(len(potential_adjacent)):
         try:
@@ -81,11 +97,11 @@ def bubblesPopped(M,Loc,Color):
     visited =  [[False]*len(M[0]) for i in range(len(M))] # visited is a dictionary instead of an array
     bubs_to_pop = []
     node_count = 0 # keeps track of total nodes
+    
     while len(stack) > 0:
         s = stack[-1]
         stack.pop()
-        # Adjacent Returns list of adjacent nodes that are same 
-        # color
+        # Adjacent Returns list of adjacent nodes that are same color
         adjacent  = findAdjacentColors(M,s,Color)
         # print(adjacent)
         if visited[s[0]][s[1]] == False:
@@ -107,7 +123,63 @@ def bubblesPopped(M,Loc,Color):
     return M_new, score
 
 
-def test_bubbles_popped():
+def bubblesPoppedDebug(M,Loc,Color):
+    
+    # do depth first search
+    stack  = []
+    stack.append(Loc)
+    visited =  [[0]*len(M[0]) for i in range(len(M))] # visited is a dictionary instead of an array
+    bubs_to_pop = []
+    node_count = 0 # keeps track of total nodes
+
+    incrementor = 0
+    while len(stack) > 0:
+
+        
+        s = stack[-1]
+        stack.pop()
+        
+
+        # Adjacent Returns list of adjacent nodes that are same color
+        if incrementor == 0:
+            adjacent  = findAdjacentColors(M,s,Color)
+            # print('Adjacent: ',adjacent)
+            # print('Stack: ',stack)
+            # print('s: ',s)
+            # print('Visited: \n', reachable.print_matrix(visited))
+        
+
+        # print('Matrix: \n',reachable.print_matrix(M))
+        
+
+        # print(adjacent)
+        if visited[s[0]][s[1]] == 0:
+            visited[s[0]][s[1]] = 1
+            bubs_to_pop.append(s)
+            node_count +=1
+
+            adjacent  = findAdjacentColors(M,s,Color)
+            # print('Adjacent: ',adjacent)
+            # print('Stack: ',stack)
+            # print('s: ',s)
+            # print('Visited:\n',reachable.print_matrix(visited))
+        
+            for node in adjacent:
+                # print(node)
+                if visited[node[0]][node[1]] == 0:
+                    stack.append(node)
+
+        incrementor += 1
+    # calculate score
+    score = calculateScore(node_count)
+    
+    # update matrix
+    M_new = update_matrix(M,bubs_to_pop,Loc,Color)
+    
+    return M_new, score, node_count, visited
+
+
+def test_bubbles_popped(mode = 'debug'):
 
     Color = 1
     Loc = (1,5)
@@ -123,12 +195,29 @@ def test_bubbles_popped():
     for i in range(n):
         test_mat[0][i] = 0
         test_mat[1][i] = 0
+        test_mat[6][i] = 1
 
     for i in range(2,m):
         test_mat[i][5] = Color
 
     M = copy.deepcopy(test_mat)
 
-    M_new,score = bubblesPopped(M,Loc,Color)
+    if mode == 'debug':
+        M_new,score,n_count,visited= bubblesPoppedDebug(M,Loc,Color)
+        print('input\n')
+        print(reachable.print_matrix(test_mat))
+        print('output\n')
+        print(reachable.print_matrix(M_new))
+        print('visited\n')
+        print(reachable.print_matrix(visited))
+        print('Score: ',score)
+        print('Bubble Count: ',n_count)
+    else:
+        M_new,score= bubblesPopped(M,Loc,Color)
+        print('input\n')
+        print(reachable.print_matrix(test_mat))
+        print('output\n')
+        print(reachable.print_matrix(M_new))
+        print('Score: ',score)
 
-    return test_mat,M_new,score
+    return
