@@ -1,6 +1,7 @@
 import random
 import copy
-import reachable
+import reachable_BG
+from reachable import print_matrix
 from BubbleGraph import BubbleGraph as BG
 
 
@@ -12,15 +13,15 @@ def calculateScore(numBalls):
     else:
         return (1+numBalls-3)*numBalls*10/2 + 30
         
-def findAdjacentColors(BubGraph,Loc,Color):
+def findAdjacentColors(bg,Loc,Color):
 # or can pre-store all adjacent entries in a 3D Array
 # ^^ Probably better to prestore adjacencies
 # have to limit adjacencies on the edgess
     adj_list = []
-    potential_adjacent = BubGraph.adjacent(Loc)
+    potential_adjacent = bg.adjacent(Loc)
     for i in range(len(potential_adjacent)):
         try:
-            if BubGraph[potential_adjacent[i][0]][potential_adjacent[i][1]] == Color:
+            if bg[potential_adjacent[i][0]][potential_adjacent[i][1]] == Color:
                 adj_list.append(potential_adjacent[i])
         except:
             print('Error: look at node: ',potential_adjacent[i])
@@ -29,23 +30,24 @@ def findAdjacentColors(BubGraph,Loc,Color):
     return adj_list
 
 
-def update_matrix(M,bubs_to_pop,Loc,Color):
+def update_matrix(bg,bubs_to_pop,Loc,Color):
+    bg_new = bg.copy()
 
     if len(bubs_to_pop) >= 3:
         for bubble in bubs_to_pop:
-            M[bubble[0]][bubble[1]] = 0
+            bg_new[bubble[0]][bubble[1]] = 0
     else:
-            M[Loc[0]][Loc[1]] = Color
+            bg_new[Loc[0]][Loc[1]] = Color
     
-    return M
+    return bg_new
 
-def bubblesPopped(M,Loc,Color):
+
+def bubblesPopped(bg,Loc,Color):
 
     # do depth first search
-    BubGraph = BG(M)
     stack  = []
     stack.append(Loc)
-    visited =  [[False]*len(M[0]) for i in range(len(M))] # visited is a dictionary instead of an array
+    visited =  [[False]*len(bg.matrix[0]) for i in range(len(bg.matrix))] # visited is a dictionary instead of an array
     bubs_to_pop = []
     node_count = 0 # keeps track of total nodes
     incrementor = 0
@@ -56,14 +58,14 @@ def bubblesPopped(M,Loc,Color):
         stack.pop()
 
         if incrementor == 0:
-            adj_nodes  = findAdjacentColors(BubGraph,s,Color)
+            adj_nodes  = findAdjacentColors(bg,s,Color)
             
 
         if visited[s[0]][s[1]] == 0:
             visited[s[0]][s[1]] = 1
             bubs_to_pop.append(s)
             node_count +=1
-            adj_nodes  = findAdjacentColors(BubGraph,s,Color)
+            adj_nodes  = findAdjacentColors(bg,s,Color)
         
             for node in adj_nodes:
                 if visited[node[0]][node[1]] == 0:
@@ -75,18 +77,17 @@ def bubblesPopped(M,Loc,Color):
     score = calculateScore(node_count)
     
     # update matrix
-    M_new = update_matrix(BubGraph.matrix,bubs_to_pop,Loc,Color)
+    M_new = update_matrix(bg,bubs_to_pop,Loc,Color)
     
     return M_new, score
 
 
-def bubblesPoppedDebug(M,Loc,Color):
+def bubblesPoppedDebug(bg,Loc,Color):
     
     # do depth first search
-    BubGraph = BG(M)
     stack  = []
     stack.append(Loc)
-    visited =  [[0]*len(M[0]) for i in range(len(M))] # visited is a dictionary instead of an array
+    visited =  [[0]*len(bg.matrix[0]) for i in range(len(bg.matrix))] # visited is a dictionary instead of an array
     bubs_to_pop = []
     node_count = 0 # keeps track of total nodes
 
@@ -99,13 +100,13 @@ def bubblesPoppedDebug(M,Loc,Color):
         
         # Adjacent Returns list of adjacent nodes that are same color
         if incrementor == 0:
-            adj_nodes  = findAdjacentColors(BubGraph,s,Color)
-            # print('Adjacent: ',adjacent)
-            # print('Stack: ',stack)
-            # print('s: ',s)
-            # print('Visited: \n', reachable.print_matrix(visited))
+            adj_nodes  = findAdjacentColors(bg,s,Color)
+            print('Adjacent: ',adj_nodes)
+            print('Stack: ',stack)
+            print('s: ',s)
+            print('Visited: \n', print_matrix(visited))
 
-        # print('Matrix: \n',reachable.print_matrix(M))
+        print('Matrix: \n',print_matrix(bg.matrix))
         
 
         # print(adjacent)
@@ -114,11 +115,11 @@ def bubblesPoppedDebug(M,Loc,Color):
             bubs_to_pop.append(s)
             node_count +=1
 
-            adj_nodes  = findAdjacentColors(BubGraph,s,Color)
-            # print('Adjacent: ',adjacent)
-            # print('Stack: ',stack)
-            # print('s: ',s)
-            # print('Visited:\n',reachable.print_matrix(visited))
+            adj_nodes  = findAdjacentColors(bg,s,Color)
+            print('Adjacent: ',adj_nodes)
+            print('Stack: ',stack)
+            print('s: ',s)
+            print('Visited:\n',print_matrix(visited))
         
             for node in adj_nodes:
                 # print(node)
@@ -156,26 +157,27 @@ def test_bubbles_popped(mode = 'debug'):
     for i in range(2,m):
         test_mat[i][5] = Color
 
-    M = copy.deepcopy(test_mat)
+    bg = BG(copy.deepcopy(test_mat))
 
     if mode == 'debug':
-        M_new,score,n_count,visited= bubblesPoppedDebug(M,Loc,Color)
+        M_new,score,n_count,visited= bubblesPoppedDebug(bg,Loc,Color)
         print('input\n')
-        print(reachable.print_matrix(test_mat))
+        print(print_matrix(test_mat))
         print('output\n')
-        print(reachable.print_matrix(M_new))
+        print(print_matrix(M_new))
         print('visited\n')
-        print(reachable.print_matrix(visited))
+        print(print_matrix(visited))
         print('Score: ',score)
         print('Bubble Count: ',n_count)
     else:
-        M_new,score= bubblesPopped(M,Loc,Color)
+        M_new,score= bubblesPopped(bg,Loc,Color)
         print('input\n')
-        print(reachable.print_matrix(test_mat))
+        print(print_matrix(test_mat))
         print('output\n')
-        print(reachable.print_matrix(M_new))
+        print(print_matrix(M_new))
         print('Score: ',score)
 
     return
+
 
 
