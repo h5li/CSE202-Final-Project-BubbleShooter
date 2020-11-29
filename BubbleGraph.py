@@ -11,7 +11,8 @@ class BubbleGraph:
         '''
         Generates a random bubble graph.
         '''
-        matrix = np.random.randint(0, n_colors + 1, (n_rows, n_cols))
+        matrix = np.random.randint(0, n_colors + 1, (n_rows - 1, n_cols))
+        matrix = np.concatenate((matrix, np.zeros((1, n_cols), dtype=int)), axis=0)
         return BubbleGraph(matrix)
 
     def serialize(self):
@@ -67,6 +68,14 @@ class BubbleGraph:
                 adj.append([x, y])
         
         return adj
+
+    def is_empty(self):
+        for row in self.matrix:
+            for bubble in row:
+                if bubble != 0:
+                    return False
+        
+        return True
 
     def copy(self):
         '''
