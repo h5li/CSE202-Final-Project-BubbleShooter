@@ -5,20 +5,21 @@ from BubbleGraph import BubbleGraph
 def max_score_one(bg: BubbleGraph, bubbles): 
     max_score = -1
     bg_final = None
+    reachables = reachable(bg)
+    
+    if len(reachables) == 0:
+        return bg, 0
+    
     for bubble in bubbles:
-        bg_next, score = optimal_shot(bg, bubble)
+        bg_next, score = optimal_shot(bg, bubble, reachables)
         if score > max_score:
             max_score = score
             bg_final = bg_next
     return bg_final, max_score
 
-def optimal_shot(bg: BubbleGraph, bubble: int): 
+def optimal_shot(bg: BubbleGraph, bubble: int, reachables): 
     max_score = -1
     bg_final = None
-
-    reachables = reachable(bg)
-    if len(reachables) == 0:
-        return bg, 0
 
     for pos in reachables:
         bg_new, score = bubbles_popped(bg, pos, bubble)
