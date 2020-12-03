@@ -7,12 +7,12 @@ class BubbleGraph:
         self.n_cols = len(matrix[0])
 
     @staticmethod
-    def random_graph(n_rows: int, n_cols: int, n_colors: int):
+    def random_graph(n_rows: int, n_cols: int, n_colors: int, n_empty: int):
         '''
         Generates a random bubble graph.
         '''
-        matrix = np.random.randint(0, n_colors + 1, (n_rows - 1, n_cols))
-        matrix = np.concatenate((matrix, np.zeros((1, n_cols), dtype=int)), axis=0)
+        matrix = np.random.randint(1, n_colors + 1, (n_rows - n_empty, n_cols))
+        matrix = np.concatenate((matrix, np.zeros((n_empty, n_cols), dtype=int)), axis=0)
         return BubbleGraph(matrix)
 
     def serialize(self):
