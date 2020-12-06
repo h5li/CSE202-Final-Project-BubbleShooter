@@ -30,8 +30,8 @@ class GUI():
     def load_matrix(self,matrix):
         self.matrix = matrix
         self.n_row,self.n_col = matrix.shape[0],matrix.shape[1]
-
-        def show(self,save_fig = None,fpath = None):
+        
+    def show(self,save_fig = False,fpath = None):
 
         fig = plt.figure(figsize=(10,10))
         ax = fig.add_subplot(1,1,1)
