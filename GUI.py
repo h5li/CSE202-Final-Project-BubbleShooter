@@ -18,7 +18,7 @@ class GUI():
                            4: 'yellow',
                            5: 'orange',
                            6: 'purple',
-                           7: 'white'
+                           -1: 'white'
                           }
 
     def load_queue(self, queue):
