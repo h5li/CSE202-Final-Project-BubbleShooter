@@ -68,7 +68,7 @@ class GUI():
 
         # show the active bubble
         size = bub_size
-        ax.scatter(self.n_col//2,-2,
+        ax.scatter(self.n_col/2 -.5,-2,
                     s = size,
                     alpha = .7,
                     c = self.color_dict[self.active_bubble])
