@@ -31,7 +31,7 @@ class GUI():
         self.matrix = matrix
         self.n_row,self.n_col = matrix.shape[0],matrix.shape[1]
 
-    def show(self):
+        def show(self,save_fig = None,fpath = None):
 
         fig = plt.figure(figsize=(10,10))
         ax = fig.add_subplot(1,1,1)
@@ -89,12 +89,19 @@ class GUI():
         ax.set_yticks([])
         ax.spines['left'].set_bounds(-1,self.n_row)
         ax.spines['right'].set_bounds(-1,self.n_row)
-        plt.show()
+        
+        #save to file if saving
+        if save_fig == True:
+            plt.savefig(fpath)
+            plt.close()
+        else:
+            fig.show()
 
+            
     @staticmethod
     def test():
         
-        matrix = BG.random_graph(40,40,5,2).matrix
+        matrix = BG.random_graph(10,10,5,2).matrix
         queue = [np.random.randint(1,6) for i in range(10)]
         active_bubble = 3
         print(matrix)
@@ -102,10 +109,5 @@ class GUI():
         gui.load_matrix(matrix)
         gui.load_bubble(active_bubble)
         gui.load_queue(queue)
+        # gui.show(save_fig = True,fpath = 'C:\\Users\\Steve\\Desktop\\test_image.jpg')
         gui.show()
-        
-
-    
-
-
-    
