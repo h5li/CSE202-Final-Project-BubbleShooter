@@ -17,7 +17,8 @@ class GUI():
                            3: 'green',
                            4: 'yellow',
                            5: 'orange',
-                           6: 'purple'
+                           6: 'purple',
+                           7: 'white'
                           }
 
     def load_queue(self, queue):
@@ -52,7 +53,7 @@ class GUI():
 
                 # add in the offset
                 if i % 2 == 1:
-                    j_offset = j + .5
+                    j_offset = j - .5
                 else:
                     j_offset = j
 
@@ -75,7 +76,7 @@ class GUI():
         
         # show the queue
         size = bub_size/1.25
-        ax.scatter(list(range((self.n_col-len(self.queue))+1,self.n_col+1)),
+        ax.scatter(list(range((self.n_col-len(self.queue)),self.n_col)),
                     [-4]*len(self.queue),
                     s = size,
                     alpha = .7,
